@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "@reach/router";
+import PostAnswer from './PostAnswer';
 
 class Question extends Component {
 
@@ -12,10 +13,17 @@ class Question extends Component {
                 <React.Fragment>
                     <h1>{question.question}</h1>
 
-                    <h3>Hobbies</h3>
+                    <h3>Answers</h3>
                     <ul>
                         {question.answers.map(answer => <li key={answer._id}>{answer.answer} | Votes: {answer.votes}</li>)}
                     </ul>
+
+                    <PostAnswer
+                        questionId={this.props.id}
+                        postAnswer={(questionId, answer) => this.props.postAnswer(questionId, answer)}
+                    />
+
+                    <hr />
 
                     <Link to="/">Back</Link>
                 </React.Fragment>

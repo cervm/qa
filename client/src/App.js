@@ -29,6 +29,37 @@ class App extends Component {
         })
     }
 
+    async askQuestion(question) {
+        let url = `${this.API_URL}/questions/`;
+        await fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+                question: question
+            }),
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8"
+            }
+        });
+        this.getQuestions();
+    }
+
+    async postAnswer(questionId, answer) {
+        let url = `${this.API_URL}/questions/`
+            .concat(questionId)
+            .concat("/answers");
+
+        await fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+                answer: answer
+            }),
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8"
+            }
+        });
+        this.getQuestions();
+    }
+
     getQuestion(id) {
         // Find the relevant question by id
         return this.state.questions.find(k => k._id === id);
@@ -38,8 +69,14 @@ class App extends Component {
         return (
             <div className="container">
                 <Router>
-                    <Question path="/question/:id" getQuestion={id => this.getQuestion(id)} />
-                    <Questions path="/" questions={this.state.questions} />
+                    <Question
+                        path="/question/:id"
+                        getQuestion={id => this.getQuestion(id)}
+                        postAnswer={(questionId, answer) => this.postAnswer(questionId, answer)} />
+                    <Questions
+                        path="/"
+                        questions={this.state.questions}
+                        askQuestion={question => this.askQuestion(question)} />
                 </Router>
             </div>
         );

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "@reach/router";
+import AskQuestion from './AskQuestion';
 
 class Questions extends Component {
 
@@ -13,6 +14,7 @@ class Questions extends Component {
                             <Link to={`/question/${question._id}`}>{question.question}</Link>
                         </li>)}
                 </ol>
+                <AskQuestion askQuestion={question => this.props.askQuestion(question)} />
             </React.Fragment>
         );
     }

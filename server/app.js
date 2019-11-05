@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const path = require('path');
+const cors = require("cors");
 
 /**** Configuration ****/
 const appName = "QA App";
@@ -11,29 +12,13 @@ const app = express();
 const buildPath = path.join(__dirname, '..', 'client', 'build');
 
 app.use(bodyParser.json()); // Parse JSON from the request body
+app.use(cors());
 app.use(morgan('combined')); // Log all http requests to the console
 app.use(express.static(buildPath)); // Serve React from build directory
 
 /**** Database ****/
 // The "QA Data Access Layer".
 const qaDAL = require('./qa_dal')(mongoose);
-
-app.use((req, res, next) => {
-  // Additional headers for the response to avoid trigger CORS security errors in the browser
-  // Read more: https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-
-  // Intercepts OPTIONS method
-  if ('OPTIONS' === req.method) {
-    // Always respond with 200
-    console.log("Allowing OPTIONS");
-    res.send(200);
-  } else {
-    next();
-  }
-});
 
 /**** Routes ****/
 app.get('/api/questions', (req, res) => {
@@ -49,9 +34,17 @@ app.get('/api/questions/:id', (req, res) => {
 app.post('/api/questions', (req, res) => {
   let question = {
     question: req.body.question,
-    answers: [] // Empty hobby array
+    answers: []
   };
   qaDAL.createQuestion(question).then(newQuestion => res.json(newQuestion));
+});
+
+app.post("/api/questions/:id/answers", (req, res) => {
+  let answer = {
+    answer: req.body.answer,
+    votes: 0
+  };
+  qaDAL.postAnswer(req.params.id, answer).then(x => res.json(x));
 });
 
 /**** Reroute all unknown requests to the React index.html ****/

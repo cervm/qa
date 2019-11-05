@@ -45,8 +45,7 @@ class Db {
 
     async postAnswer(questionId, answer) {
         const question = await this.getQuestion(questionId);
-        answer.votes = 0;
-        question.answer.push(answer);
+        question.answers.push(answer);
 
         try {
             return question.save();

@@ -1,57 +1,46 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import { Router } from "@reach/router";
+import Question from "./Question";
+import Questions from "./Questions";
 
 class App extends Component {
+    // API url from the file '.env' OR the file '.env.development'.
+    // The first file is only used in production.
     API_URL = process.env.REACT_APP_API_URL;
 
     constructor(props) {
         super(props);
-
         this.state = {
-            timer: 5,
-            data: "not loaded"
+            questions: []
         };
-
-        this.handleCountdown = this.handleCountdown.bind(this);
-        this.getData = this.getData.bind(this);
     }
 
     componentDidMount() {
-        setTimeout(this.handleCountdown, 1000);
+        // Get everything from the API
+        this.getQuestions().then(() => console.log("Questions gotten!"));
     }
 
-    handleCountdown() {
-        if (this.state.timer > 0)
-        {
-            this.setState({
-                timer: this.state.timer - 1
-            });
-            setTimeout(this.handleCountdown, 1000);
-        } else {
-            this.getData();
-        }
+    async getQuestions() {
+        let url = `${this.API_URL}/questions`; // URL of the API.
+        let result = await fetch(url); // Get the data
+        let json = await result.json(); // Turn it into json
+        return this.setState({ // Set it in the state
+            questions: json
+        })
     }
 
-    getData() {
-        fetch(`${this.API_URL}/hello`)
-            .then(response => response.json())
-            .then(data => {
-                this.setState({
-                    data: data.msg
-                });
-            })
-            .catch(error => {
-                console.error("Error when fetching: ", error);
-            })
+    getQuestion(id) {
+        // Find the relevant question by id
+        return this.state.questions.find(k => k._id === id);
     }
 
     render() {
         return (
             <div className="container">
-                <h1>MERN Heroku Example</h1>
-
-                <p>Countdown to API call: {this.state.timer}</p>
-
-                <p>Data: {this.state.data}</p>
+                <Router>
+                    <Question path="/question/:id" getQuestion={id => this.getQuestion(id)} />
+                    <Questions path="/" questions={this.state.questions} />
+                </Router>
             </div>
         );
     }

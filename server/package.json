@@ -1,5 +1,5 @@
 {
-  "name": "mern_heroku_api",
+  "name": "qa-app-api",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
@@ -9,10 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "mongoose": "^5.7.8",
     "morgan": "^1.9.1"
   },
-  "description": "Small template for developing a MERN API using express.js",
   "engines": {
     "node": "10.15.3",
     "npm": "6.9.0"

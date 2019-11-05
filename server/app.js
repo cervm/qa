@@ -44,7 +44,12 @@ app.post("/api/questions/:id/answers", (req, res) => {
     answer: req.body.answer,
     votes: 0
   };
-  qaDAL.postAnswer(req.params.id, answer).then(x => res.json(x));
+  qaDAL.postAnswer(req.params.id, answer).then(question => res.json(question));
+});
+
+app.put("/api/questions/:questionId/answers/:answerId/upvote", (req, res) => {
+  console.log(req.params);
+  qaDAL.upvote(req.params.questionId, req.params.answerId).then(question => res.json(question));
 });
 
 /**** Reroute all unknown requests to the React index.html ****/

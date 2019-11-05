@@ -3,6 +3,14 @@ import { Link } from "@reach/router";
 import PostAnswer from './PostAnswer';
 
 class Question extends Component {
+    constructor(props) {
+        super(props);
+        this.onVote = this.onVote.bind(this);
+    }
+
+    onVote(event) {
+        this.props.onVote(this.props.id, event.currentTarget.dataset.id);
+    }
 
     render() {
         const question = this.props.getQuestion(this.props.id);
@@ -15,7 +23,12 @@ class Question extends Component {
 
                     <h3>Answers</h3>
                     <ul>
-                        {question.answers.map(answer => <li key={answer._id}>{answer.answer} | Votes: {answer.votes}</li>)}
+                        {question.answers.map(answer =>
+                            <li key={answer._id}>
+                                {answer.answer}<br />
+                                Votes: {answer.votes}<br />
+                                <button onClick={() => this.props.onVote(this.props.id, answer._id)}>Vote up</button><br />
+                            </li>)}
                     </ul>
 
                     <PostAnswer

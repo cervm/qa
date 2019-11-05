@@ -60,9 +60,24 @@ class App extends Component {
         this.getQuestions();
     }
 
+    async upvoteAnswer(questionId, answerId) {
+        let url = `${this.API_URL}/questions/${questionId}/answers/${answerId}/upvote`
+        await fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8"
+            }
+        });
+        this.getQuestions();
+    }
+
     getQuestion(id) {
         // Find the relevant question by id
         return this.state.questions.find(k => k._id === id);
+    }
+
+    onVote(questionId, answerId) {
+        this.upvoteAnswer(questionId, answerId);
     }
 
     render() {
@@ -72,7 +87,8 @@ class App extends Component {
                     <Question
                         path="/question/:id"
                         getQuestion={id => this.getQuestion(id)}
-                        postAnswer={(questionId, answer) => this.postAnswer(questionId, answer)} />
+                        postAnswer={(questionId, answer) => this.postAnswer(questionId, answer)}
+                        onVote={(questionId, answerId) => this.onVote(questionId, answerId)} />
                     <Questions
                         path="/"
                         questions={this.state.questions}

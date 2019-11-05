@@ -65,12 +65,15 @@ class Db {
     }
 
     async upvote(questionId, answerId) {
-        // TODO: Error handling
-        const question = await this.getQuestion(questionId);
-        const answer = this.getAnswer(question, answerId);
-        answer.votes = answer.votes + 1;
-
-        return question.save();
+        try {
+            const question = await this.getQuestion(questionId);
+            const answer = this.getAnswer(question, answerId);
+            answer.votes += 1;
+            return question.save();
+        } catch (error) {
+            console.error("upvote:", error.message);
+            return {};
+        }
     }
 
     /**
